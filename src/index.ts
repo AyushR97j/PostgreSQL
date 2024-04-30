@@ -1,6 +1,3 @@
-//write a function to create a users table in your db
-import { Client } from "pg";
-
 ///////////////////////////////env config//////////////////////////////////////////
 
 import * as dotenv from 'dotenv';
@@ -9,6 +6,10 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 /////////////////////////////////////////////////////////////////////////////////////
+
+/*
+//write a function to create a users table in your db////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+import { Client } from "pg";
 
 const client = new Client({
   connectionString:
@@ -29,3 +30,29 @@ async function createUsersTable() {
 }
 
 createUsersTable();
+*/
+
+//write a function that lets you insert data in a table in your db//////////////////////////////////////////////////////////////////////////////////////////////////
+
+import { Client } from "pg";
+
+async function insertData() {
+  const client = new Client({
+    connectionString:
+      process.env.CONNECTION_STRING,
+  });
+
+  try{
+    await client.connect();
+    const insertQuery = "INSERT INTO users (username, email, password) VALUES('username1', 'user1@example.com', 'user1_pass');";
+    const res = await client.query(insertQuery);
+    console.log('Insertion success:', res);
+  } catch(error) {
+    console.log('Erro in insertion:', error);
+  } finally {
+    await client.end();
+  }
+
+}
+
+insertData();
