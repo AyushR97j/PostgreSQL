@@ -1,6 +1,6 @@
 ///////////////////////////////env config//////////////////////////////////////////
 
-import * as dotenv from 'dotenv';
+import * as dotenv from "dotenv";
 
 // Load environment variables from .env file
 dotenv.config();
@@ -34,6 +34,7 @@ createUsersTable();
 
 //write a function that lets you insert data in a table in your db//////////////////////////////////////////////////////////////////////////////////////////////////
 
+/*
 import { Client } from "pg";
 
 async function insertData() {
@@ -56,3 +57,37 @@ async function insertData() {
 }
 
 insertData();
+
+*/
+
+//Fetch user data from the db given an email
+
+import { Client } from "pg";
+
+async function getUser(email: string) {
+  const client = new Client({
+    connectionString: process.env.CONNECTION_STRING,
+  });
+
+  try {
+    await client.connect();
+    const query = "SELECT * FROM users WHERE email = $1";
+    const values = [email];
+    const result = await client.query(query, values);
+
+    if (result.rows.length > 0) {
+      console.log("User Found", result.rows[0]);
+      return result.rows[0];
+    } else {
+      console.log("User Not Found With given email");
+      return null;
+    }
+  } catch (err) {
+    console.log("Error during fetching user", err);
+    throw err;
+  } finally {
+    await client.end();
+  }
+}
+
+getUser('user2@example.com').catch(console.error);
